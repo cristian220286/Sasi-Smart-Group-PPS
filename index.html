@@ -39,7 +39,7 @@
         #app-content { display: none; }
     </style>
 </head>
-<body class="p-4 sm:p-6 lg:p-8">
+<body class="p-4 sm:p-6 lg:p-8 flex flex-col min-h-screen">
 
     <div id="toast"></div>
     <div id="myModal" class="modal">
@@ -50,109 +50,110 @@
         </div>
     </div>
 
-    <div class="max-w-screen-2xl mx-auto">
-        <header class="mb-6 flex flex-wrap justify-between items-center gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Sasi Smart Group PPS (Tiempo Real)</h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <button id="btn-logout" class="btn btn-secondary"><i class="fa-solid fa-right-from-bracket"></i>Cerrar Sesión</button>
-            </div>
-            <div class="text-gray-600">
-                Usuario: <span id="user-id-display" class="font-semibold text-indigo-700">Cargando...</span>
-            </div>
-        </header>
+    <main class="flex-grow">
+        <div class="max-w-screen-2xl mx-auto">
+            <header class="mb-6 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800">Sasi Smart Group PPS (Tiempo Real)</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="btn-limpiar-datos" class="btn btn-danger"><i class="fa-solid fa-bomb"></i>Limpiar Datos del Negocio</button>
+                    <button id="btn-logout" class="btn btn-secondary"><i class="fa-solid fa-right-from-bracket"></i>Cerrar Sesión</button>
+                </div>
+                <div class="text-gray-600">
+                    Usuario: <span id="user-id-display" class="font-semibold text-indigo-700">Cargando...</span>
+                </div>
+            </header>
 
-        <div id="auth-section">
-            <h2>Iniciar Sesión / Registrarse</h2>
-            <input type="email" id="auth-email" class="input-field" placeholder="Correo Electrónico" required>
-            <input type="password" id="auth-password" class="input-field" placeholder="Contraseña" required>
-            <button id="btn-login" class="btn btn-primary">Iniciar Sesión</button>
-            <button id="btn-register" class="btn btn-secondary">Registrarse</button>
-        </div>
-
-        <div id="app-content">
-            <!-- Contenido de la app -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-                <div class="card">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-700">1. Cargar Catálogo (CSV)</h2>
-                    <input type="file" id="csv-file-input" accept=".csv" class="input-field file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                </div>
-                <div class="card">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-700">2. Registrar Venta</h2>
-                    <form id="form-ventas">
-                        <div class="space-y-4">
-                            <input type="text" id="venta-sku" class="input-field" placeholder="SKU del Producto" required>
-                            <input type="number" id="venta-cantidad" class="input-field" placeholder="Cantidad Vendida" required min="1">
-                            <button type="submit" class="btn btn-primary w-full"><i class="fa-solid fa-cart-shopping"></i>Registrar</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-700">3. Añadir al Conteo</h2>
-                    <form id="form-conteo">
-                        <div class="space-y-4">
-                            <input type="text" id="conteo-sku" class="input-field" placeholder="SKU del Producto" required>
-                            <input type="number" id="conteo-cantidad" class="input-field" placeholder="Cantidad a AÑADIR" required min="1">
-                            <button type="submit" class="btn btn-primary w-full"><i class="fa-solid fa-plus"></i>Añadir</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card border-2 border-amber-400 bg-amber-50">
-                    <h2 class="text-xl font-semibold mb-4 text-amber-800"><i class="fa-solid fa-shield-halved"></i> 4. Corregir Stock</h2>
-                    <form id="form-correccion">
-                        <div class="space-y-4">
-                            <input type="text" id="correc-sku" class="input-field" placeholder="SKU a corregir" required>
-                            <input type="number" id="correc-cantidad" class="input-field" placeholder="Nuevo Stock Físico TOTAL" required min="0">
-                            <input type="email" id="correc-email" class="input-field" placeholder="Su Email para auditoría" required>
-                            <input type="password" id="correc-codigo" class="input-field" placeholder="Código de Autorización" required>
-                            <button type="submit" class="btn btn-primary w-full bg-amber-600 hover:bg-amber-700"><i class="fa-solid fa-pen-to-square"></i>Corregir</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card border-2 border-rose-400 bg-rose-50">
-                    <h2 class="text-xl font-semibold mb-4 text-rose-800"><i class="fa-solid fa-undo"></i> 5. Anular Venta</h2>
-                    <form id="form-anulacion">
-                        <div class="space-y-4">
-                            <input type="text" id="anular-sku" class="input-field" placeholder="SKU de la venta a anular" required>
-                            <input type="number" id="anular-cantidad" class="input-field" placeholder="Cantidad a anular" required min="1">
-                            <input type="email" id="anular-email" class="input-field" placeholder="Su Email para auditoría" required>
-                            <input type="password" id="anular-codigo" class="input-field" placeholder="Código de Autorización" required>
-                            <button type="submit" class="btn btn-primary w-full bg-rose-600 hover:bg-rose-700"><i class="fa-solid fa-eraser"></i>Anular</button>
-                        </div>
-                    </form>
-                </div>
+            <div id="auth-section">
+                <h2>Iniciar Sesión / Registrarse</h2>
+                <input type="email" id="auth-email" class="input-field" placeholder="Correo Electrónico" required>
+                <input type="password" id="auth-password" class="input-field" placeholder="Contraseña" required>
+                <button id="btn-login" class="btn btn-primary">Iniciar Sesión</button>
+                <button id="btn-register" class="btn btn-secondary">Registrarse</button>
             </div>
-            <div class="card">
-                <div class="flex justify-between items-center mb-4 gap-4 flex-wrap">
-                    <h2 class="text-2xl font-bold text-gray-800">Dashboard de Reconciliación</h2>
-                    <div class="flex gap-4 items-center">
-                        <input type="text" id="search-input" placeholder="Buscar por SKU..." class="input-field w-full max-w-xs">
-                        <button id="btn-descargar-csv" class="btn btn-secondary"><i class="fa-solid fa-file-csv"></i>Descargar CSV</button>
+
+            <div id="app-content">
+                <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                    <div class="card">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-700">1. Cargar Catálogo (CSV)</h2>
+                        <input type="file" id="csv-file-input" accept=".csv" class="input-field file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    </div>
+                    <div class="card">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-700">2. Registrar Venta</h2>
+                        <form id="form-ventas">
+                            <div class="space-y-4">
+                                <input type="text" id="venta-sku" class="input-field" placeholder="SKU del Producto" required>
+                                <input type="number" id="venta-cantidad" class="input-field" placeholder="Cantidad Vendida" required min="1">
+                                <button type="submit" class="btn btn-primary w-full"><i class="fa-solid fa-cart-shopping"></i>Registrar</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <h2 class="text-xl font-semibold mb-4 text-gray-700">3. Añadir al Conteo</h2>
+                        <form id="form-conteo">
+                            <div class="space-y-4">
+                                <input type="text" id="conteo-sku" class="input-field" placeholder="SKU del Producto" required>
+                                <input type="number" id="conteo-cantidad" class="input-field" placeholder="Cantidad a AÑADIR" required min="1">
+                                <button type="submit" class="btn btn-primary w-full"><i class="fa-solid fa-plus"></i>Añadir</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card border-2 border-amber-400 bg-amber-50">
+                        <h2 class="text-xl font-semibold mb-4 text-amber-800"><i class="fa-solid fa-shield-halved"></i> 4. Corregir Stock</h2>
+                        <form id="form-correccion">
+                            <div class="space-y-4">
+                                <input type="text" id="correc-sku" class="input-field" placeholder="SKU a corregir" required>
+                                <input type="number" id="correc-cantidad" class="input-field" placeholder="Nuevo Stock Físico TOTAL" required min="0">
+                                <input type="email" id="correc-email" class="input-field" placeholder="Su Email para auditoría" required>
+                                <input type="password" id="correc-codigo" class="input-field" placeholder="Código de Autorización" required>
+                                <button type="submit" class="btn btn-primary w-full bg-amber-600 hover:bg-amber-700"><i class="fa-solid fa-pen-to-square"></i>Corregir</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card border-2 border-rose-400 bg-rose-50">
+                        <h2 class="text-xl font-semibold mb-4 text-rose-800"><i class="fa-solid fa-undo"></i> 5. Anular Venta</h2>
+                        <form id="form-anulacion">
+                            <div class="space-y-4">
+                                <input type="text" id="anular-sku" class="input-field" placeholder="SKU de la venta a anular" required>
+                                <input type="number" id="anular-cantidad" class="input-field" placeholder="Cantidad a anular" required min="1">
+                                <input type="email" id="anular-email" class="input-field" placeholder="Su Email para auditoría" required>
+                                <input type="password" id="anular-codigo" class="input-field" placeholder="Código de Autorización" required>
+                                <button type="submit" class="btn btn-primary w-full bg-rose-600 hover:bg-rose-700"><i class="fa-solid fa-eraser"></i>Anular</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="overflow-x-auto max-h-[65vh]">
-                    <table class="w-full">
-                        <thead class="table-header">
-                            <tr>
-                                <th>Prioridad</th><th>SKU</th><th>Estado</th><th>Dif. Auditoría</th><th>Dif. Conteo vs Teórico</th><th>Stock Final Real</th><th>Stock Teórico</th><th>Físico Contado</th><th>Total Vendido</th><th>Fecha Conteo</th><th>Fecha Venta</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dashboard-body"></tbody>
-                    </table>
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4 gap-4 flex-wrap">
+                        <h2 class="text-2xl font-bold text-gray-800">Dashboard de Reconciliación</h2>
+                        <div class="flex gap-4 items-center">
+                            <input type="text" id="search-input" placeholder="Buscar por SKU..." class="input-field w-full max-w-xs">
+                            <button id="btn-descargar-csv" class="btn btn-secondary"><i class="fa-solid fa-file-csv"></i>Descargar CSV</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto max-h-[65vh]">
+                        <table class="w-full">
+                            <thead class="table-header">
+                                <tr>
+                                    <th>Prioridad</th><th>SKU</th><th>Estado</th><th>Dif. Auditoría</th><th>Dif. Conteo vs Teórico</th><th>Stock Final Real</th><th>Stock Teórico</th><th>Físico Contado</th><th>Total Vendido</th><th>Fecha Conteo</th><th>Fecha Venta</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-body"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <footer class="text-center p-4 text-gray-500 text-sm mt-auto">
+        <p>Hecho por Cristian Morinigo</p>
+    </footer>
 
     <script type="module">
-        // ============================================================================================
-        // === ⚙️ CONFIGURACIÓN PARA CADA NEGOCIO ⚙️ ===
-        // ============================================================================================
         const BUSINESS_ID = 'Sasi Smart Group PPS'; 
-        // ⬇️ PEGA AQUÍ LA NUEVA URL DE TU GOOGLE APPS SCRIPT DESPLEGADO ⬇️
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnc82ZkQ_akf9SrkYnKlxoOVXEi5ywzns0CnbUzoWy2LqevSkOl5mmKobmlQuZBm08/exec';
-        // ============================================================================================
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -175,7 +176,6 @@
         let stockTeorico = [], datosVentas = [], datosConteo = [];
         let userId = null, userEmail = null;
 
-        // --- REFERENCIAS UI ---
         const formVentas = document.getElementById('form-ventas');
         const formConteo = document.getElementById('form-conteo');
         const formCorreccion = document.getElementById('form-correccion');
@@ -183,6 +183,7 @@
         const dashboardBody = document.getElementById('dashboard-body');
         const csvFileInput = document.getElementById('csv-file-input');
         const btnDescargarCSV = document.getElementById('btn-descargar-csv');
+        const btnLimpiarDatos = document.getElementById('btn-limpiar-datos');
         const searchInput = document.getElementById('search-input');
         const userIdDisplay = document.getElementById('user-id-display');
         const authSection = document.getElementById('auth-section');
@@ -198,11 +199,39 @@
         const closeButton = document.querySelector('.close-button');
 
         function showModal(message) {
-            modalMessage.textContent = message;
+            modalMessage.innerHTML = `<p>${message}</p>`;
             modalButtons.innerHTML = `<button class="btn btn-primary">Aceptar</button>`;
             modalButtons.firstElementChild.onclick = () => { myModal.style.display = 'none'; };
             myModal.style.display = 'flex';
         }
+
+        function showModalConInput(title, message, confirmationText, onConfirm) {
+            modalMessage.innerHTML = `<h3 class="text-xl font-bold text-red-700 mb-2">${title}</h3><p class="mb-4">${message}</p><input type="text" id="modal-confirm-input" class="input-field" placeholder="Escribe '${confirmationText}' para confirmar">`;
+            
+            const confirmBtn = document.createElement('button');
+            confirmBtn.textContent = 'Confirmar y Borrar Todo';
+            confirmBtn.className = 'btn btn-danger';
+            confirmBtn.disabled = true;
+            
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.className = 'btn btn-secondary';
+            
+            modalButtons.innerHTML = '';
+            modalButtons.appendChild(cancelBtn);
+            modalButtons.appendChild(confirmBtn);
+
+            const input = document.getElementById('modal-confirm-input');
+            input.oninput = () => { confirmBtn.disabled = input.value !== confirmationText; };
+            
+            cancelBtn.onclick = () => { myModal.style.display = 'none'; };
+            confirmBtn.onclick = () => {
+                myModal.style.display = 'none';
+                onConfirm();
+            };
+            myModal.style.display = 'flex';
+        }
+
         closeButton.onclick = () => { myModal.style.display = 'none'; };
         window.onclick = (event) => { if (event.target == myModal) { myModal.style.display = 'none'; } };
 
@@ -215,26 +244,20 @@
 
         const normalizarSku = (sku) => sku.toUpperCase().trim();
 
-        // --- FUNCIÓN DE AUDITORÍA SIMPLIFICADA Y ROBUSTA ---
         function sendToAudit(logData) {
             if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('URL_DE_TU_NUEVO_SCRIPT_AQUI')) {
                 showModal('Error: La URL de auditoría no está configurada en el archivo HTML.');
                 return false;
             }
-            // Este método usa 'no-cors' para evitar el error "Failed to fetch".
-            // No podemos confirmar si llegó, pero es la forma más robusta de enviarlo.
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // ¡LA CLAVE ESTÁ AQUÍ!
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Tipo de contenido simple
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(logData)
             }).catch(err => console.error("Error en el envío de auditoría (ignorado por no-cors):", err));
-            
             showToast('Operación enviada a auditoría.');
             return true;
         }
-
-        // --- LÓGICA DE LA APP ---
         
         async function corregirConteo(event) {
             event.preventDefault();
@@ -246,19 +269,14 @@
             if (!stockTeorico.some(p => p.sku === sku)) {
                 return showModal('El SKU no existe en el catálogo.');
             }
-            
             const fisicoContadoActual = calcularFisicoContado(sku);
             const nuevaCantidadTotal = parseInt(document.getElementById('correc-cantidad').value, 10);
-
-            // Objeto de datos simplificado, tal como lo pediste
             const logData = {
                 tipo: 'Corrección de Stock', sku, email,
                 cantidadAnterior: fisicoContadoActual,
                 cantidadNueva: nuevaCantidadTotal
             };
-            
             if (!sendToAudit(logData)) return;
-
             try {
                 await addDoc(datosConteoCol, {
                     timestamp: serverTimestamp(), sku, cantidad: nuevaCantidadTotal,
@@ -282,17 +300,12 @@
             if (!stockTeorico.some(p => p.sku === sku)) {
                 return showModal('El SKU no existe en el catálogo.');
             }
-
             const cantidadAnular = parseInt(document.getElementById('anular-cantidad').value, 10);
-            
-            // Objeto de datos simplificado
             const logData = {
                 tipo: 'Anulación de Venta', sku, email,
                 cantidadAnulada: cantidadAnular
             };
-
             if (!sendToAudit(logData)) return;
-
             try {
                 await addDoc(datosVentasCol, {
                     timestamp: serverTimestamp(), sku, cantidad: -cantidadAnular,
@@ -305,8 +318,31 @@
                 console.error("Error al anular venta:", error);
             }
         }
+        
+        async function limpiarDatosDelNegocio() {
+            showModalConInput(
+                '¡ADVERTENCIA! ACCIÓN IRREVERSIBLE',
+                'Esto borrará de forma PERMANENTE todo el catálogo de productos, todas las ventas y todos los conteos para este negocio. Esta acción no se puede deshacer.',
+                'BORRAR DATOS',
+                async () => {
+                    showToast('Eliminando datos... por favor espere.');
+                    try {
+                        const colecciones = [stockTeoricoCol, datosVentasCol, datosConteoCol];
+                        for (const coleccion of colecciones) {
+                            const snapshot = await getDocs(coleccion);
+                            const batch = writeBatch(db);
+                            snapshot.forEach(doc => batch.delete(doc.ref));
+                            await batch.commit();
+                        }
+                        showToast('¡Todos los datos del negocio han sido eliminados!');
+                    } catch (error) {
+                        console.error("Error al eliminar los datos:", error);
+                        showModal('Ocurrió un error al eliminar los datos. Revisa la consola.');
+                    }
+                }
+            );
+        }
 
-        // El resto de la lógica (autenticación, listeners, renderizado) permanece igual.
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 userId = user.uid; userEmail = user.email;
@@ -432,7 +468,6 @@
             return motorCalculos;
         }
 
-        // Event listeners
         btnLogin.addEventListener('click', async () => {
             try { await signInWithEmailAndPassword(auth, authEmailInput.value, authPasswordInput.value); showToast('Sesión iniciada.'); }
             catch (error) { showModal('Credenciales incorrectas.'); }
@@ -445,6 +480,7 @@
             } catch (error) { showModal('Error al registrar. El email ya podría estar en uso.'); }
         });
         btnLogout.addEventListener('click', () => signOut(auth));
+        btnLimpiarDatos.addEventListener('click', limpiarDatosDelNegocio);
         formVentas.addEventListener('submit', async (e) => {
             e.preventDefault();
             const sku = normalizarSku(document.getElementById('venta-sku').value);
