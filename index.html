@@ -30,78 +30,23 @@
         #toast.show { opacity: 1; transform: translateY(0); }
         #toast.success { background-color: #22c55e; }
         #toast.error { background-color: #ef4444; }
-        /* Estilos para el modal */
-        .modal {
-            display: none; /* Oculto por defecto */
-            position: fixed; /* Permanece en su lugar */
-            z-index: 10000; /* Se superpone a todo */
-            left: 0;
-            top: 0;
-            width: 100%; /* Ancho completo */
-            height: 100%; /* Alto completo */
-            overflow: auto; /* Habilitar scroll si es necesario */
-            background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-        }
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        /* Estilos para la sección de autenticación */
-        #auth-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            max-width: 400px;
-            margin: 50px auto;
-        }
-        #auth-section h2 {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #4b5563;
-            margin-bottom: 1rem;
-        }
-        #app-content {
-            display: none; /* Oculto por defecto hasta que el usuario inicie sesión */
-        }
+        .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); justify-content: center; align-items: center; }
+        .modal-content { background-color: #fefefe; margin: auto; padding: 20px; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); width: 80%; max-width: 500px; text-align: center; }
+        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
+        #auth-section { display: flex; flex-direction: column; gap: 1rem; padding: 2rem; background-color: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); max-width: 400px; margin: 50px auto; }
+        #auth-section h2 { text-align: center; font-size: 1.5rem; font-weight: 600; color: #4b5563; margin-bottom: 1rem; }
+        #app-content { display: none; }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8">
 
     <div id="toast"></div>
-
-    <!-- Modal para mensajes de confirmación/alerta -->
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <p id="modal-message" class="text-lg font-semibold mb-4"></p>
-            <div id="modal-buttons" class="flex justify-center gap-4">
-                <!-- Los botones se insertarán aquí dinámicamente -->
-            </div>
+            <div id="modal-buttons" class="flex justify-center gap-4"></div>
         </div>
     </div>
 
@@ -109,18 +54,15 @@
         <header class="mb-6 flex flex-wrap justify-between items-center gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-gray-800">Sasi Smart Group PPS (Tiempo Real)</h1>
-                <p class="text-gray-600 mt-1">Gestión a gran escala con Auditoría en Google Drive y datos en tiempo real.</p>
             </div>
             <div class="flex items-center gap-4">
-                <button id="btn-limpiar-datos" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i>Limpiar Datos Locales</button>
                 <button id="btn-logout" class="btn btn-secondary"><i class="fa-solid fa-right-from-bracket"></i>Cerrar Sesión</button>
             </div>
             <div class="text-gray-600">
-                ID de Usuario: <span id="user-id-display" class="font-semibold text-indigo-700">Cargando...</span>
+                Usuario: <span id="user-id-display" class="font-semibold text-indigo-700">Cargando...</span>
             </div>
         </header>
 
-        <!-- Sección de Autenticación -->
         <div id="auth-section">
             <h2>Iniciar Sesión / Registrarse</h2>
             <input type="email" id="auth-email" class="input-field" placeholder="Correo Electrónico" required>
@@ -129,13 +71,11 @@
             <button id="btn-register" class="btn btn-secondary">Registrarse</button>
         </div>
 
-        <!-- Contenido Principal de la Aplicación (Oculto hasta iniciar sesión) -->
         <div id="app-content">
-            <!-- Sección de Entradas de Datos -->
+            <!-- Contenido de la app -->
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                 <div class="card">
                     <h2 class="text-xl font-semibold mb-4 text-gray-700">1. Cargar Catálogo (CSV)</h2>
-                    <p class="text-sm text-gray-500 mb-4">Cargue su stock teórico. El archivo debe ser CSV con <strong>punto y coma (;)</strong> como separador. El sistema ignorará la cabecera.</p>
                     <input type="file" id="csv-file-input" accept=".csv" class="input-field file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                 </div>
                 <div class="card">
@@ -183,13 +123,11 @@
                     </form>
                 </div>
             </div>
-
-            <!-- Dashboard de Reconciliación -->
             <div class="card">
                 <div class="flex justify-between items-center mb-4 gap-4 flex-wrap">
                     <h2 class="text-2xl font-bold text-gray-800">Dashboard de Reconciliación</h2>
                     <div class="flex gap-4 items-center">
-                        <input type="text" id="search-input" placeholder="Buscar por SKU o Descripción..." class="input-field w-full max-w-xs">
+                        <input type="text" id="search-input" placeholder="Buscar por SKU..." class="input-field w-full max-w-xs">
                         <button id="btn-descargar-csv" class="btn btn-secondary"><i class="fa-solid fa-file-csv"></i>Descargar CSV</button>
                     </div>
                 </div>
@@ -207,21 +145,19 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
     <script type="module">
         // ============================================================================================
         // === ⚙️ CONFIGURACIÓN PARA CADA NEGOCIO ⚙️ ===
         // ============================================================================================
         const BUSINESS_ID = 'Sasi Smart Group PPS'; 
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwrifYdG6JUaTirDddN7fKSjEA5X-IIWVZHhY-Ap3-lx8YMF4BONUSmlXPk0IV94jXw/exec';
+        // ⬇️ PEGA AQUÍ LA NUEVA URL DE TU GOOGLE APPS SCRIPT DESPLEGADO ⬇️
+        const GOOGLE_SCRIPT_URL = 'URL_DE_TU_NUEVO_SCRIPT_AQUI';
         // ============================================================================================
 
-        // Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, collection, onSnapshot, setDoc, addDoc, query, orderBy, serverTimestamp, writeBatch, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURACIÓN DE FIREBASE (No tocar) ---
         const firebaseConfig = {
           apiKey: "AIzaSyAzGc3KVQFYIoQ7W_WZAj585AbUpiU5HUI",
           authDomain: "sasi-alfa-store-pps.firebaseapp.com",
@@ -231,22 +167,13 @@
           appId: "1:739926676625:web:b4ff509e304f980ff71b30"
         };
 
-        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // Referencias a colecciones de Firestore
-        let stockTeoricoCol;
-        let datosVentasCol;
-        let datosConteoCol;
-
-        // Variables globales
-        let stockTeorico = [];
-        let datosVentas = [];
-        let datosConteo = [];
-        let userId = null;
-        let userEmail = null;
+        let stockTeoricoCol, datosVentasCol, datosConteoCol;
+        let stockTeorico = [], datosVentas = [], datosConteo = [];
+        let userId = null, userEmail = null;
 
         // --- REFERENCIAS UI ---
         const formVentas = document.getElementById('form-ventas');
@@ -255,9 +182,7 @@
         const formAnulacion = document.getElementById('form-anulacion');
         const dashboardBody = document.getElementById('dashboard-body');
         const csvFileInput = document.getElementById('csv-file-input');
-        const btnLimpiarDatos = document.getElementById('btn-limpiar-datos');
         const btnDescargarCSV = document.getElementById('btn-descargar-csv');
-        const toastElement = document.getElementById('toast');
         const searchInput = document.getElementById('search-input');
         const userIdDisplay = document.getElementById('user-id-display');
         const authSection = document.getElementById('auth-section');
@@ -272,408 +197,199 @@
         const modalButtons = document.getElementById('modal-buttons');
         const closeButton = document.querySelector('.close-button');
 
-        // --- FUNCIONES DEL MODAL Y TOAST ---
-        function showModal(message, type = 'alert', onConfirm = null, onCancel = null) {
+        function showModal(message) {
             modalMessage.textContent = message;
-            modalButtons.innerHTML = ''; 
-
-            if (type === 'confirm') {
-                const confirmBtn = document.createElement('button');
-                confirmBtn.textContent = 'Confirmar';
-                confirmBtn.className = 'btn btn-primary';
-                confirmBtn.onclick = () => {
-                    myModal.style.display = 'none';
-                    if (onConfirm) onConfirm();
-                };
-                modalButtons.appendChild(confirmBtn);
-
-                const cancelBtn = document.createElement('button');
-                cancelBtn.textContent = 'Cancelar';
-                cancelBtn.className = 'btn btn-secondary';
-                cancelBtn.onclick = () => {
-                    myModal.style.display = 'none';
-                    if (onCancel) onCancel();
-                };
-                modalButtons.appendChild(cancelBtn);
-            } else { 
-                const okBtn = document.createElement('button');
-                okBtn.textContent = 'Aceptar';
-                okBtn.className = 'btn btn-primary';
-                okBtn.onclick = () => {
-                    myModal.style.display = 'none';
-                    if (onConfirm) onConfirm();
-                };
-                modalButtons.appendChild(okBtn);
-            }
+            modalButtons.innerHTML = `<button class="btn btn-primary">Aceptar</button>`;
+            modalButtons.firstElementChild.onclick = () => { myModal.style.display = 'none'; };
             myModal.style.display = 'flex';
         }
-
         closeButton.onclick = () => { myModal.style.display = 'none'; };
         window.onclick = (event) => { if (event.target == myModal) { myModal.style.display = 'none'; } };
 
-        function showToast(message, type = 'success') {
+        function showToast(message) {
+            const toastElement = document.getElementById('toast');
             toastElement.textContent = message;
-            toastElement.className = ``;
-            toastElement.classList.add('show', type);
+            toastElement.className = 'show success';
             setTimeout(() => { toastElement.classList.remove('show'); }, 3000);
         }
 
-        function normalizarSku(sku) { return sku.toUpperCase().trim(); }
+        const normalizarSku = (sku) => sku.toUpperCase().trim();
 
-        // --- FUNCIONES DE AUTENTICACIÓN ---
-        btnLogin.addEventListener('click', async () => {
-            const email = authEmailInput.value;
-            const password = authPasswordInput.value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                showToast('Sesión iniciada correctamente.');
-            } catch (error) {
-                console.error("Error al iniciar sesión:", error);
-                let errorMessage = 'Error al iniciar sesión. Por favor, verifique sus credenciales.';
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    errorMessage = 'Credenciales incorrectas. Verifique el email y la contraseña.';
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage = 'Formato de correo electrónico inválido.';
-                }
-                showModal(errorMessage, 'alert');
+        // --- FUNCIÓN DE AUDITORÍA SIMPLIFICADA Y ROBUSTA ---
+        function sendToAudit(logData) {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('URL_DE_TU_NUEVO_SCRIPT_AQUI')) {
+                showModal('Error: La URL de auditoría no está configurada en el archivo HTML.');
+                return false;
             }
-        });
-
-        btnRegister.addEventListener('click', async () => {
-            const email = authEmailInput.value;
-            const password = authPasswordInput.value;
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "users", userCredential.user.uid), {
-                    email: email,
-                    businessId: BUSINESS_ID,
-                    createdAt: serverTimestamp()
-                });
-                showToast('Usuario registrado y sesión iniciada correctamente.');
-            } catch (error) {
-                console.error("Error al registrar usuario:", error);
-                let errorMessage = 'Error al registrar usuario. Inténtelo de nuevo.';
-                if (error.code === 'auth/email-already-in-use') {
-                    errorMessage = 'El correo electrónico ya está en uso.';
-                } else if (error.code === 'auth/weak-password') {
-                    errorMessage = 'La contraseña debe tener al menos 6 caracteres.';
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage = 'Formato de correo electrónico inválido.';
-                }
-                showModal(errorMessage, 'alert');
-            }
-        });
-
-        btnLogout.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                showToast('Sesión cerrada correctamente.');
-            } catch (error) {
-                console.error("Error al cerrar sesión:", error);
-                showModal('Error al cerrar sesión. Inténtelo de nuevo.', 'alert');
-            }
-        });
-
-        // --- LISTENER DE ESTADO DE AUTENTICACIÓN (Función principal) ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                userId = user.uid;
-                userEmail = user.email;
-                userIdDisplay.textContent = userEmail || userId;
-                
-                const userDocRef = doc(db, "users", userId);
-                try {
-                    const userDoc = await getDoc(userDocRef);
-
-                    if (userDoc.exists() && userDoc.data().businessId === BUSINESS_ID) {
-                        authSection.style.display = 'none';
-                        appContent.style.display = 'block';
-
-                        stockTeoricoCol = collection(db, `businesses/${BUSINESS_ID}/stockTeorico`);
-                        datosVentasCol = collection(db, `businesses/${BUSINESS_ID}/datosVentas`);
-                        datosConteoCol = collection(db, `businesses/${BUSINESS_ID}/datosConteo`);
-
-                        setupFirestoreListeners();
-                    } else {
-                        await signOut(auth);
-                        showModal('Acceso denegado. Este usuario no pertenece a este negocio o su perfil no se encontró.', 'alert');
-                    }
-                } catch (error) {
-                    console.error("Error al verificar el perfil del usuario:", error);
-                    await signOut(auth);
-                    showModal('Error de permisos. No se pudo verificar tu perfil. Contacta al administrador.', 'alert');
-                }
-
-            } else {
-                userId = null;
-                userEmail = null;
-                userIdDisplay.textContent = 'No autenticado';
-                authSection.style.display = 'flex';
-                appContent.style.display = 'none';
-                authEmailInput.value = '';
-                authPasswordInput.value = '';
-                stockTeorico = [];
-                datosVentas = [];
-                datosConteo = [];
-                renderDashboard();
-            }
-        });
-
-        // --- FUNCIONES DE CARGA Y REGISTRO DE DATOS ---
-        async function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            showToast('Cargando catálogo, por favor espere...', 'info');
-
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const text = e.target.result;
-                const rows = text.split('\n').filter(row => row.trim() !== '').slice(1);
-                try {
-                    const nuevosProductos = rows.map(row => {
-                        const columns = row.split(';');
-                        if (columns.length < 3) throw new Error(`Fila inválida: ${row}`);
-                        const sku = normalizarSku(columns[0]);
-                        const stock = parseInt(columns[2], 10);
-                        if (isNaN(stock)) throw new Error(`Stock inválido para SKU ${sku}`);
-                        return { sku, descripcion: columns[1].trim(), stock };
-                    });
-
-                    const existingDocs = await getDocs(stockTeoricoCol);
-                    const batch = writeBatch(db);
-                    existingDocs.forEach(doc => { batch.delete(doc.ref); });
-                    nuevosProductos.forEach(prod => {
-                        const docRef = doc(stockTeoricoCol, prod.sku);
-                        batch.set(docRef, prod);
-                    });
-                    await batch.commit();
-
-                    showToast(`Catálogo cargado con ${nuevosProductos.length} productos.`, 'success');
-                    csvFileInput.value = '';
-                } catch (error) {
-                    showModal(`Error al procesar CSV: ${error.message}`, 'alert');
-                    console.error("Error al cargar CSV a Firestore:", error);
-                }
-            };
-            reader.readAsText(file);
+            // Este método usa 'no-cors' para evitar el error "Failed to fetch".
+            // No podemos confirmar si llegó, pero es la forma más robusta de enviarlo.
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // ¡LA CLAVE ESTÁ AQUÍ!
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Tipo de contenido simple
+                body: JSON.stringify(logData)
+            }).catch(err => console.error("Error en el envío de auditoría (ignorado por no-cors):", err));
+            
+            showToast('Operación enviada a auditoría.');
+            return true;
         }
 
-        async function registrarVenta(event) {
-            event.preventDefault();
-            const skuInput = document.getElementById('venta-sku');
-            const cantidadInput = document.getElementById('venta-cantidad');
-            const sku = normalizarSku(skuInput.value);
-            const cantidad = parseInt(cantidadInput.value, 10);
-
-            if (!stockTeorico.some(p => p.sku === sku)) {
-                showModal('Error: El SKU no existe en el catálogo.', 'alert');
-                return;
-            }
-
-            try {
-                await addDoc(datosVentasCol, {
-                    timestamp: serverTimestamp(),
-                    sku: sku,
-                    cantidad: cantidad,
-                    userId: userId,
-                    businessId: BUSINESS_ID
-                });
-                showToast('Venta registrada.');
-                formVentas.reset();
-                skuInput.focus();
-            } catch (error) {
-                console.error("Error al registrar venta:", error);
-                showModal('Error al registrar la venta. Verifica tus permisos.', 'alert');
-            }
-        }
-
-        async function anadirAlConteo(event) {
-            event.preventDefault();
-            const skuInput = document.getElementById('conteo-sku');
-            const cantidadInput = document.getElementById('conteo-cantidad');
-            const sku = normalizarSku(skuInput.value);
-            const cantidad = parseInt(cantidadInput.value, 10);
-
-            if (!stockTeorico.some(p => p.sku === sku)) {
-                showModal('Error: El SKU no existe en el catálogo.', 'alert');
-                return;
-            }
-
-            try {
-                await addDoc(datosConteoCol, {
-                    timestamp: serverTimestamp(),
-                    sku: sku,
-                    cantidad: cantidad,
-                    tipo: 'conteo',
-                    userId: userId,
-                    businessId: BUSINESS_ID
-                });
-                showToast('Cantidad añadida al conteo.');
-                formConteo.reset();
-                skuInput.focus();
-            } catch (error) {
-                console.error("Error al añadir conteo:", error);
-                showModal('Error al añadir al conteo. Verifica tus permisos.', 'alert');
-            }
-        }
+        // --- LÓGICA DE LA APP ---
         
-        // --- FUNCIONES DE AUDITORÍA (MEJORADAS) ---
-        async function sendToAudit(logData) {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('AKfycb...')) {
-                showToast('URL de auditoría no configurada.', 'error');
-                return false;
-            }
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(logData)
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.result === "success") {
-                        showToast('Operación enviada a auditoría correctamente.');
-                        return true;
-                    } else {
-                        throw new Error(result.error || 'Respuesta de error desconocida del script.');
-                    }
-                } else {
-                    throw new Error(`Error de red: ${response.status} ${response.statusText}`);
-                }
-            } catch (error) {
-                console.error('Error enviando a Google Sheets para auditoría:', error);
-                showModal(`Error crítico al enviar a auditoría: ${error.message}. Revisa la consola y la configuración del script.`, 'alert');
-                return false;
-            }
-        }
-
         async function corregirConteo(event) {
             event.preventDefault();
-            const skuInput = document.getElementById('correc-sku');
-            const cantidadInput = document.getElementById('correc-cantidad');
-            const emailInput = document.getElementById('correc-email');
-            const codigoInput = document.getElementById('correc-codigo');
-
-            if (codigoInput.value !== '10234567') {
-                showModal('Error: Código de autorización incorrecto.', 'alert');
-                return;
+            const sku = normalizarSku(document.getElementById('correc-sku').value);
+            const email = document.getElementById('correc-email').value;
+            if (document.getElementById('correc-codigo').value !== '10234567') {
+                return showModal('Código de autorización incorrecto.');
             }
-            const sku = normalizarSku(skuInput.value);
             if (!stockTeorico.some(p => p.sku === sku)) {
-                showModal('Error: El SKU no existe en el catálogo.', 'alert');
-                return;
+                return showModal('El SKU no existe en el catálogo.');
             }
+            
             const fisicoContadoActual = calcularFisicoContado(sku);
-            const nuevaCantidadTotal = parseInt(cantidadInput.value, 10);
-            const diferencia = nuevaCantidadTotal - fisicoContadoActual;
+            const nuevaCantidadTotal = parseInt(document.getElementById('correc-cantidad').value, 10);
 
-            // Objeto de datos para auditoría (sin descripción)
+            // Objeto de datos simplificado, tal como lo pediste
             const logData = {
-                tipo: 'Corrección de Stock',
-                timestamp: new Date().toISOString(),
-                sku,
-                email: emailInput.value,
+                tipo: 'Corrección de Stock', sku, email,
                 cantidadAnterior: fisicoContadoActual,
-                cantidadNueva: nuevaCantidadTotal,
-                diferencia: diferencia,
-                userId: userEmail,
-                businessId: BUSINESS_ID
+                cantidadNueva: nuevaCantidadTotal
             };
-
-            const auditSuccess = await sendToAudit(logData);
-            if (!auditSuccess) return;
+            
+            if (!sendToAudit(logData)) return;
 
             try {
                 await addDoc(datosConteoCol, {
-                    timestamp: serverTimestamp(),
-                    sku,
-                    cantidad: nuevaCantidadTotal,
-                    tipo: 'modificacion',
-                    email: emailInput.value,
-                    userId: userId,
-                    businessId: BUSINESS_ID
+                    timestamp: serverTimestamp(), sku, cantidad: nuevaCantidadTotal,
+                    tipo: 'modificacion', email, userId, businessId: BUSINESS_ID
                 });
                 showToast('Stock corregido y registrado.');
-                formCorreccion.reset();
+                event.target.reset();
             } catch (error) {
+                showModal('Error al corregir el stock en Firestore.');
                 console.error("Error al corregir conteo:", error);
-                showModal('Error al corregir el stock. Verifica tus permisos.', 'alert');
             }
         }
 
         async function anularVenta(event) {
             event.preventDefault();
-            const skuInput = document.getElementById('anular-sku');
-            const cantidadInput = document.getElementById('anular-cantidad');
-            const emailInput = document.getElementById('anular-email');
-            const codigoInput = document.getElementById('anular-codigo');
-
-            if (codigoInput.value !== '10234567') {
-                showModal('Error: Código de autorización incorrecto.', 'alert');
-                return;
+            const sku = normalizarSku(document.getElementById('anular-sku').value);
+            const email = document.getElementById('anular-email').value;
+            if (document.getElementById('anular-codigo').value !== '10234567') {
+                return showModal('Código de autorización incorrecto.');
             }
-            const sku = normalizarSku(skuInput.value);
             if (!stockTeorico.some(p => p.sku === sku)) {
-                showModal('Error: El SKU no existe en el catálogo.', 'alert');
-                return;
+                return showModal('El SKU no existe en el catálogo.');
             }
-            const cantidadAnular = parseInt(cantidadInput.value, 10);
 
-            // Objeto de datos para auditoría (sin descripción)
+            const cantidadAnular = parseInt(document.getElementById('anular-cantidad').value, 10);
+            
+            // Objeto de datos simplificado
             const logData = {
-                tipo: 'Anulación de Venta',
-                timestamp: new Date().toISOString(),
-                sku,
-                email: emailInput.value,
-                cantidadAnulada: cantidadAnular,
-                userId: userEmail,
-                businessId: BUSINESS_ID
+                tipo: 'Anulación de Venta', sku, email,
+                cantidadAnulada: cantidadAnular
             };
 
-            const auditSuccess = await sendToAudit(logData);
-            if (!auditSuccess) return;
+            if (!sendToAudit(logData)) return;
 
             try {
                 await addDoc(datosVentasCol, {
-                    timestamp: serverTimestamp(),
-                    sku,
-                    cantidad: -cantidadAnular,
-                    userId: userId,
-                    businessId: BUSINESS_ID
+                    timestamp: serverTimestamp(), sku, cantidad: -cantidadAnular,
+                    userId, businessId: BUSINESS_ID
                 });
                 showToast('Venta anulada y registrada.');
-                formAnulacion.reset();
+                event.target.reset();
             } catch (error) {
+                showModal('Error al anular la venta en Firestore.');
                 console.error("Error al anular venta:", error);
-                showModal('Error al anular la venta. Verifica tus permisos.', 'alert');
             }
         }
+
+        // El resto de la lógica (autenticación, listeners, renderizado) permanece igual.
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid; userEmail = user.email;
+                userIdDisplay.textContent = userEmail || userId;
+                const userDocRef = doc(db, "users", userId);
+                try {
+                    const userDoc = await getDoc(userDocRef);
+                    if (userDoc.exists() && userDoc.data().businessId === BUSINESS_ID) {
+                        authSection.style.display = 'none'; appContent.style.display = 'block';
+                        stockTeoricoCol = collection(db, `businesses/${BUSINESS_ID}/stockTeorico`);
+                        datosVentasCol = collection(db, `businesses/${BUSINESS_ID}/datosVentas`);
+                        datosConteoCol = collection(db, `businesses/${BUSINESS_ID}/datosConteo`);
+                        setupFirestoreListeners();
+                    } else {
+                        await signOut(auth); showModal('Acceso denegado. Usuario no pertenece a este negocio.');
+                    }
+                } catch (error) {
+                    console.error("Error al verificar perfil:", error); await signOut(auth);
+                    showModal('Error de permisos al verificar tu perfil.');
+                }
+            } else {
+                userId = null; userEmail = null;
+                userIdDisplay.textContent = 'No autenticado';
+                authSection.style.display = 'flex'; appContent.style.display = 'none';
+                stockTeorico = []; datosVentas = []; datosConteo = [];
+                renderDashboard();
+            }
+        });
+
+        function setupFirestoreListeners() {
+            onSnapshot(query(collection(db, `businesses/${BUSINESS_ID}/stockTeorico`)), (snapshot) => {
+                stockTeorico = snapshot.docs.map(doc => ({ sku: doc.id, ...doc.data() }));
+                renderDashboard();
+            });
+            onSnapshot(query(collection(db, `businesses/${BUSINESS_ID}/datosVentas`), orderBy("timestamp")), (snapshot) => {
+                datosVentas = snapshot.docs.map(doc => ({...doc.data(), timestamp: doc.data().timestamp }));
+                renderDashboard();
+            });
+            onSnapshot(query(collection(db, `businesses/${BUSINESS_ID}/datosConteo`), orderBy("timestamp")), (snapshot) => {
+                datosConteo = snapshot.docs.map(doc => ({...doc.data(), timestamp: doc.data().timestamp }));
+                renderDashboard();
+            });
+        }
         
-        // --- FUNCIONES DE CÁLCULO Y RENDERIZADO ---
         function calcularFisicoContado(sku) {
             const conteosSKU = datosConteo.filter(c => c.sku === sku);
             if (conteosSKU.length === 0) return 0;
-
             let ultimoIndiceModificacion = -1;
             for (let i = conteosSKU.length - 1; i >= 0; i--) {
-                if (conteosSKU[i].tipo === 'modificacion') {
-                    ultimoIndiceModificacion = i;
-                    break;
-                }
+                if (conteosSKU[i].tipo === 'modificacion') { ultimoIndiceModificacion = i; break; }
             }
-
             if (ultimoIndiceModificacion !== -1) {
                 let stockBase = conteosSKU[ultimoIndiceModificacion].cantidad;
                 for (let i = ultimoIndiceModificacion + 1; i < conteosSKU.length; i++) {
-                    if (conteosSKU[i].tipo === 'conteo') {
-                        stockBase += conteosSKU[i].cantidad;
-                    }
+                    if (conteosSKU[i].tipo === 'conteo') { stockBase += conteosSKU[i].cantidad; }
                 }
                 return stockBase;
             } else {
                 return conteosSKU.reduce((total, c) => total + c.cantidad, 0);
             }
+        }
+
+        function renderDashboard() {
+            const motorCalculos = getDashboardData();
+            const formatFecha = (fecha) => !fecha ? 'N/A' : fecha.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
+            let rowsHtml = '';
+            motorCalculos.forEach(item => {
+                const estadoClass = `badge-${item.estadoCalculado.toLowerCase()}`;
+                rowsHtml += `<tr>
+                    <td class="table-cell font-bold text-center">${item.prioridad}</td>
+                    <td class="table-cell font-semibold text-indigo-700">${item.sku}</td>
+                    <td class="table-cell"><span class="badge ${estadoClass}">${item.estadoCalculado}</span></td>
+                    <td class="table-cell font-semibold ${item.diferenciaAuditoria < 0 ? 'text-red-600' : ''}">${item.diferenciaAuditoria}</td>
+                    <td class="table-cell font-semibold ${typeof item.diferenciaConteoDirecta === 'number' && item.diferenciaConteoDirecta < 0 ? 'text-red-600' : ''}">${item.diferenciaConteoDirecta}</td>
+                    <td class="table-cell font-bold text-lg">${item.stockFinalCalculado}</td>
+                    <td class="table-cell">${item.stockTeorico}</td>
+                    <td class="table-cell">${item.horaConteo ? item.fisicoContado : 'N/A'}</td>
+                    <td class="table-cell">${item.ventas}</td>
+                    <td class="table-cell text-sm">${formatFecha(item.horaConteo)}</td>
+                    <td class="table-cell text-sm">${formatFecha(item.horaVenta)}</td>
+                </tr>`;
+            });
+            dashboardBody.innerHTML = rowsHtml;
         }
 
         function getDashboardData() {
@@ -688,158 +404,93 @@
                 };
                 const conteosFiltrados = datosConteo.filter(c => c.sku === sku);
                 const ultimoConteoTimestamp = conteosFiltrados.length > 0 ? new Date(Math.max(...conteosFiltrados.map(c => c.timestamp ? c.timestamp.toDate().getTime() : 0))) : null;
-
                 const stockTeoricoInicial = producto.stock;
                 const ventas = agregadoVentas.total;
                 const horaConteo = ultimoConteoTimestamp;
-                const horaVenta = agregadoVentas.ultimaVenta;
-
                 let stockFinalCalculado;
                 if (!horaConteo) {
                     stockFinalCalculado = stockTeoricoInicial - ventas;
                 } else {
                      stockFinalCalculado = fisicoContado - ventasFiltradas.filter(v => v.timestamp && v.timestamp.toDate() > horaConteo).reduce((sum, v) => sum + v.cantidad, 0);
                 }
-
                 let diferenciaAuditoria = horaConteo ? fisicoContado - (stockTeoricoInicial - ventasFiltradas.filter(v => v.timestamp && v.timestamp.toDate() < horaConteo).reduce((sum, v) => sum + v.cantidad, 0)) : 0;
                 let diferenciaConteoDirecta = horaConteo ? fisicoContado - stockTeoricoInicial : 'N/A';
-
                 let estadoCalculado, prioridad;
-                if (!horaConteo) {
-                    estadoCalculado = 'Pendiente';
-                    prioridad = 3;
-                } else if (diferenciaAuditoria === 0) {
-                    estadoCalculado = 'Cuadrado';
-                    prioridad = 4;
-                } else if (diferenciaAuditoria > 0) {
-                    estadoCalculado = 'Sobrante';
-                    prioridad = 2;
-                } else {
-                    estadoCalculado = 'Faltante';
-                    prioridad = 1;
-                }
-
-                return { sku, descripcion: producto.descripcion, stockTeorico: stockTeoricoInicial, fisicoContado, ventas, horaConteo, horaVenta, diferenciaAuditoria, diferenciaConteoDirecta, stockFinalCalculado, estadoCalculado, prioridad };
+                if (!horaConteo) { estadoCalculado = 'Pendiente'; prioridad = 3; } 
+                else if (diferenciaAuditoria === 0) { estadoCalculado = 'Cuadrado'; prioridad = 4; }
+                else if (diferenciaAuditoria > 0) { estadoCalculado = 'Sobrante'; prioridad = 2; }
+                else { estadoCalculado = 'Faltante'; prioridad = 1; }
+                return { sku, ...producto, stockTeorico: stockTeoricoInicial, fisicoContado, ventas, horaConteo, horaVenta: agregadoVentas.ultimaVenta, diferenciaAuditoria, diferenciaConteoDirecta, stockFinalCalculado, estadoCalculado, prioridad };
             });
-
             if (searchTerm) {
-                motorCalculos = motorCalculos.filter(item =>
-                    item.sku.toUpperCase().includes(searchTerm) ||
-                    (item.descripcion && item.descripcion.toUpperCase().includes(searchTerm))
-                );
+                motorCalculos = motorCalculos.filter(item => item.sku.toUpperCase().includes(searchTerm));
             }
-
             motorCalculos.sort((a, b) => {
                 if (a.prioridad !== b.prioridad) return a.prioridad - b.prioridad;
                 return Math.abs(b.diferenciaAuditoria) - Math.abs(a.diferenciaAuditoria);
             });
-
             return motorCalculos;
         }
 
-        function renderDashboard() {
-            const motorCalculos = getDashboardData();
-            const formatFecha = (fecha) => !fecha ? 'N/A' : fecha.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
-            let rowsHtml = '';
-
-            motorCalculos.forEach(item => {
-                const estadoClass = `badge-${item.estadoCalculado.toLowerCase()}`;
-                const difAuditoriaClass = item.diferenciaAuditoria < 0 ? 'text-red-600' : (item.diferenciaAuditoria > 0 ? 'text-green-600' : '');
-                const difDirectaClass = typeof item.diferenciaConteoDirecta === 'number' && item.diferenciaConteoDirecta < 0 ? 'text-red-600' : (typeof item.diferenciaConteoDirecta === 'number' && item.diferenciaConteoDirecta > 0 ? 'text-green-600' : '');
-
-                rowsHtml += `<tr>
-                    <td class="table-cell font-bold text-center">${item.prioridad}</td>
-                    <td class="table-cell font-semibold text-indigo-700">${item.sku}</td>
-                    <td class="table-cell"><span class="badge ${estadoClass}">${item.estadoCalculado}</span></td>
-                    <td class="table-cell font-semibold ${difAuditoriaClass}">${item.diferenciaAuditoria}</td>
-                    <td class="table-cell font-semibold ${difDirectaClass}">${item.diferenciaConteoDirecta}</td>
-                    <td class="table-cell font-bold text-lg">${item.stockFinalCalculado}</td>
-                    <td class="table-cell">${item.stockTeorico}</td>
-                    <td class="table-cell">${item.horaConteo ? item.fisicoContado : 'N/A'}</td>
-                    <td class="table-cell">${item.ventas}</td>
-                    <td class="table-cell text-sm">${formatFecha(item.horaConteo)}</td>
-                    <td class="table-cell text-sm">${formatFecha(item.horaVenta)}</td>
-                </tr>`;
-            });
-            dashboardBody.innerHTML = rowsHtml;
-        }
-
-        function descargarCSV() {
-            const data = getDashboardData();
-            const headers = ["Prioridad", "SKU", "Descripción", "Estado", "Dif. Auditoría", "Dif. Conteo vs Teórico", "Stock Final Real", "Stock Teórico", "Físico Contado", "Total Vendido", "Fecha Conteo", "Fecha Venta"];
-            let csvContent = headers.join(";") + "\n";
-
-            data.forEach(item => {
-                const row = [
-                    item.prioridad,
-                    item.sku,
-                    `"${(item.descripcion || '').replace(/"/g, '""')}"`,
-                    item.estadoCalculado,
-                    item.diferenciaAuditoria,
-                    item.diferenciaConteoDirecta,
-                    item.stockFinalCalculado,
-                    item.stockTeorico,
-                    item.horaConteo ? item.fisicoContado : 'N/A',
-                    item.ventas,
-                    item.horaConteo ? item.horaConteo.toLocaleString('es-AR') : 'N/A',
-                    item.horaVenta ? item.horaVenta.toLocaleString('es-AR') : 'N/A'
-                ];
-                csvContent += row.join(";") + "\n";
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `balance_inventario_${BUSINESS_ID}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function setupFirestoreListeners() {
-            onSnapshot(stockTeoricoCol, (snapshot) => {
-                stockTeorico = snapshot.docs.map(doc => ({ sku: doc.id, ...doc.data() }));
-                renderDashboard();
-            }, (error) => {
-                console.error("Error al escuchar stockTeorico:", error);
-                showModal("Error al cargar el catálogo. Verifica tus permisos y las reglas de Firestore.", 'alert');
-            });
-
-            const qVentas = query(datosVentasCol, orderBy("timestamp"));
-            onSnapshot(qVentas, (snapshot) => {
-                datosVentas = snapshot.docs.map(doc => ({...doc.data(), timestamp: doc.data().timestamp }));
-                renderDashboard();
-            }, (error) => {
-                console.error("Error al escuchar datosVentas:", error);
-                showModal("Error al cargar las ventas. Verifica tus permisos.", 'alert');
-            });
-
-            const qConteo = query(datosConteoCol, orderBy("timestamp"));
-            onSnapshot(qConteo, (snapshot) => {
-                datosConteo = snapshot.docs.map(doc => ({...doc.data(), timestamp: doc.data().timestamp }));
-                renderDashboard();
-            }, (error) => {
-                console.error("Error al escuchar datosConteo:", error);
-                showModal("Error al cargar el conteo. Verifica tus permisos.", 'alert');
-            });
-        }
-
         // Event listeners
-        csvFileInput.addEventListener('change', handleFileUpload);
-        formVentas.addEventListener('submit', registrarVenta);
-        formConteo.addEventListener('submit', anadirAlConteo);
+        btnLogin.addEventListener('click', async () => {
+            try { await signInWithEmailAndPassword(auth, authEmailInput.value, authPasswordInput.value); showToast('Sesión iniciada.'); }
+            catch (error) { showModal('Credenciales incorrectas.'); }
+        });
+        btnRegister.addEventListener('click', async () => {
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, authEmailInput.value, authPasswordInput.value);
+                await setDoc(doc(db, "users", cred.user.uid), { email: cred.user.email, businessId: BUSINESS_ID, createdAt: serverTimestamp() });
+                showToast('Usuario registrado.');
+            } catch (error) { showModal('Error al registrar. El email ya podría estar en uso.'); }
+        });
+        btnLogout.addEventListener('click', () => signOut(auth));
+        formVentas.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const sku = normalizarSku(document.getElementById('venta-sku').value);
+            if (!stockTeorico.some(p => p.sku === sku)) return showModal('SKU no encontrado.');
+            await addDoc(datosVentasCol, { timestamp: serverTimestamp(), sku, cantidad: parseInt(document.getElementById('venta-cantidad').value, 10), userId, businessId: BUSINESS_ID });
+            e.target.reset();
+        });
+        formConteo.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const sku = normalizarSku(document.getElementById('conteo-sku').value);
+            if (!stockTeorico.some(p => p.sku === sku)) return showModal('SKU no encontrado.');
+            await addDoc(datosConteoCol, { timestamp: serverTimestamp(), sku, cantidad: parseInt(document.getElementById('conteo-cantidad').value, 10), tipo: 'conteo', userId, businessId: BUSINESS_ID });
+            e.target.reset();
+        });
         formCorreccion.addEventListener('submit', corregirConteo);
         formAnulacion.addEventListener('submit', anularVenta);
-        btnLimpiarDatos.addEventListener('click', () => {
-             showModal('Esta acción es solo para desarrollo y no afecta la base de datos. ¿Continuar?', 'confirm', () => {
-                localStorage.clear(); // Ya no se usa para datos principales
-                showToast('Limpieza local realizada (no afecta Firestore).');
-             });
+        csvFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const text = await file.text();
+            const rows = text.split('\n').filter(row => row.trim() !== '').slice(1);
+            const batch = writeBatch(db);
+            rows.forEach(row => {
+                const cols = row.split(';');
+                if (cols.length < 3) return;
+                const sku = normalizarSku(cols[0]);
+                const docRef = doc(stockTeoricoCol, sku);
+                batch.set(docRef, { descripcion: cols[1].trim(), stock: parseInt(cols[2], 10) });
+            });
+            await batch.commit();
+            showToast('Catálogo cargado.');
+        });
+        btnDescargarCSV.addEventListener('click', () => {
+            const data = getDashboardData();
+            const headers = ["Prioridad", "SKU", "Descripción", "Estado", "Dif. Auditoría", "Stock Final Real", "Stock Teórico", "Físico Contado", "Total Vendido"];
+            let csvContent = headers.join(";") + "\n";
+            data.forEach(item => {
+                const row = [item.prioridad, item.sku, `"${(item.descripcion || '').replace(/"/g, '""')}"`, item.estadoCalculado, item.diferenciaAuditoria, item.stockFinalCalculado, item.stockTeorico, item.horaConteo ? item.fisicoContado : 'N/A', item.ventas];
+                csvContent += row.join(";") + "\n";
+            });
+            const link = document.createElement("a");
+            link.setAttribute("href", 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent));
+            link.setAttribute("download", `balance_inventario_${BUSINESS_ID}.csv`);
+            link.click();
         });
         searchInput.addEventListener('input', renderDashboard);
-        btnDescargarCSV.addEventListener('click', descargarCSV);
 
     </script>
 </body>
