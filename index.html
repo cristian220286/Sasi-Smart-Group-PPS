@@ -212,27 +212,8 @@
         // ============================================================================================
         // === ⚙️ CONFIGURACIÓN PARA CADA NEGOCIO ⚙️ ===
         // ============================================================================================
-        //
-        // INSTRUCCIONES PARA DUPLICAR:
-        // Para cada uno de tus 18 negocios, simplemente copia este archivo HTML completo y
-        // modifica ÚNICAMENTE la siguiente variable 'BUSINESS_ID'.
-        //
-        // EJEMPLO:
-        // Para la sucursal "Sasi Centro", la línea sería:
-        // const BUSINESS_ID = 'Sasi Centro';
-        //
-        // Para la sucursal "Sasi Norte", la línea sería:
-        // const BUSINESS_ID = 'Sasi Norte';
-        //
-        // ¡Y eso es todo! El resto del código funcionará automáticamente para ese negocio.
-        //
         const BUSINESS_ID = 'Sasi Smart Group PPS'; 
-        
-        // URL del Web App de Google Apps Script para la auditoría centralizada.
-        // Asegúrate de que esté desplegado con acceso para "Cualquier usuario".
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTSp1A7tIl4sVus6RXkbONCPkGmrvjQVRplg8ul9agoMa7ZmSBogrNpW_Al7Q3l8kYUA/exec';
-
-        // --- FIN DE LA CONFIGURACIÓN ---
         // ============================================================================================
 
         // Firebase SDKs
@@ -579,8 +560,7 @@
                 return;
             }
             const sku = normalizarSku(skuInput.value);
-            const producto = stockTeorico.find(p => p.sku === sku);
-            if (!producto) {
+            if (!stockTeorico.some(p => p.sku === sku)) {
                 showModal('Error: El SKU no existe en el catálogo.', 'alert');
                 return;
             }
@@ -588,16 +568,16 @@
             const nuevaCantidadTotal = parseInt(cantidadInput.value, 10);
             const diferencia = nuevaCantidadTotal - fisicoContadoActual;
 
+            // Objeto de datos para auditoría (sin descripción)
             const logData = {
                 tipo: 'Corrección de Stock',
                 timestamp: new Date().toISOString(),
                 sku,
-                descripcion: producto.descripcion,
                 email: emailInput.value,
                 cantidadAnterior: fisicoContadoActual,
                 cantidadNueva: nuevaCantidadTotal,
                 diferencia: diferencia,
-                userId: userEmail, // Enviar email en lugar de UID para ser más legible
+                userId: userEmail,
                 businessId: BUSINESS_ID
             };
 
@@ -634,21 +614,20 @@
                 return;
             }
             const sku = normalizarSku(skuInput.value);
-            const producto = stockTeorico.find(p => p.sku === sku);
-            if (!producto) {
+            if (!stockTeorico.some(p => p.sku === sku)) {
                 showModal('Error: El SKU no existe en el catálogo.', 'alert');
                 return;
             }
             const cantidadAnular = parseInt(cantidadInput.value, 10);
 
+            // Objeto de datos para auditoría (sin descripción)
             const logData = {
                 tipo: 'Anulación de Venta',
                 timestamp: new Date().toISOString(),
                 sku,
-                descripcion: producto.descripcion,
                 email: emailInput.value,
                 cantidadAnulada: cantidadAnular,
-                userId: userEmail, // Enviar email en lugar de UID
+                userId: userEmail,
                 businessId: BUSINESS_ID
             };
 
