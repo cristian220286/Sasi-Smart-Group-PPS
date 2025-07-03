@@ -209,12 +209,38 @@
 
     <!-- Firebase SDKs -->
     <script type="module">
+        // ============================================================================================
+        // === ⚙️ CONFIGURACIÓN PARA CADA NEGOCIO ⚙️ ===
+        // ============================================================================================
+        //
+        // INSTRUCCIONES PARA DUPLICAR:
+        // Para cada uno de tus 18 negocios, simplemente copia este archivo HTML completo y
+        // modifica ÚNICAMENTE la siguiente variable 'BUSINESS_ID'.
+        //
+        // EJEMPLO:
+        // Para la sucursal "Sasi Centro", la línea sería:
+        // const BUSINESS_ID = 'Sasi Centro';
+        //
+        // Para la sucursal "Sasi Norte", la línea sería:
+        // const BUSINESS_ID = 'Sasi Norte';
+        //
+        // ¡Y eso es todo! El resto del código funcionará automáticamente para ese negocio.
+        //
+        const BUSINESS_ID = 'Sasi Smart Group PPS'; 
+        
+        // URL del Web App de Google Apps Script para la auditoría centralizada.
+        // Asegúrate de que esté desplegado con acceso para "Cualquier usuario".
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTSp1A7tIl4sVus6RXkbONCPkGmrvjQVRplg8ul9agoMa7ZmSBogrNpW_Al7Q3l8kYUA/exec';
+
+        // --- FIN DE LA CONFIGURACIÓN ---
+        // ============================================================================================
+
+        // Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // *** CORRECCIÓN: Se importa getDoc y se quita getDocs que no se usaba correctamente ***
         import { getFirestore, doc, collection, onSnapshot, setDoc, addDoc, query, orderBy, serverTimestamp, writeBatch, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURACIÓN DE FIREBASE ---
+        // --- CONFIGURACIÓN DE FIREBASE (No tocar) ---
         const firebaseConfig = {
           apiKey: "AIzaSyAzGc3KVQFYIoQ7W_WZAj585AbUpiU5HUI",
           authDomain: "sasi-alfa-store-pps.firebaseapp.com",
@@ -223,12 +249,6 @@
           messagingSenderId: "739926676625",
           appId: "1:739926676625:web:b4ff509e304f980ff71b30"
         };
-
-        // --- CONFIGURACIÓN ESPECÍFICA DEL NEGOCIO ---
-        const BUSINESS_ID = 'Sasi Smart Group PPS'; 
-        
-        // --- CONFIGURACIÓN DE GOOGLE APPS SCRIPT PARA AUDITORÍA ---
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTSp1A7tIl4sVus6RXkbONCPkGmrvjQVRplg8ul9agoMa7ZmSBogrNpW_Al7Q3l8kYUA/exec';
 
         // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
@@ -239,7 +259,6 @@
         let stockTeoricoCol;
         let datosVentasCol;
         let datosConteoCol;
-        let usersCol = collection(db, "users");
 
         // Variables globales
         let stockTeorico = [];
@@ -381,7 +400,6 @@
                 userEmail = user.email;
                 userIdDisplay.textContent = userEmail || userId;
                 
-                // *** CORRECCIÓN: Se usa getDoc en lugar de getDocs ***
                 const userDocRef = doc(db, "users", userId);
                 try {
                     const userDoc = await getDoc(userDocRef);
@@ -413,8 +431,6 @@
                 appContent.style.display = 'none';
                 authEmailInput.value = '';
                 authPasswordInput.value = '';
-                // Detener listeners si existen para evitar errores
-                // (En una app más compleja, se manejarían las desuscripciones aquí)
                 stockTeorico = [];
                 datosVentas = [];
                 datosConteo = [];
@@ -520,26 +536,33 @@
             }
         }
         
-        // --- El resto de las funciones (auditoría, cálculos, renderizado) permanecen igual ---
-        
+        // --- FUNCIONES DE AUDITORÍA (MEJORADAS) ---
         async function sendToAudit(logData) {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'URL_A_REEMPLAZAR') {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('AKfycb...')) {
                 showToast('URL de auditoría no configurada.', 'error');
                 return false;
             }
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // Cambiado a no-cors si el script no está configurado para preflight
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(logData)
                 });
-                // Con no-cors no podemos leer la respuesta, pero la petición se envía
-                showToast('Operación enviada a auditoría.');
-                return true;
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.result === "success") {
+                        showToast('Operación enviada a auditoría correctamente.');
+                        return true;
+                    } else {
+                        throw new Error(result.error || 'Respuesta de error desconocida del script.');
+                    }
+                } else {
+                    throw new Error(`Error de red: ${response.status} ${response.statusText}`);
+                }
             } catch (error) {
-                console.error('Error enviando a auditoría:', error);
-                showModal('Error al contactar el servicio de auditoría.', 'alert');
+                console.error('Error enviando a Google Sheets para auditoría:', error);
+                showModal(`Error crítico al enviar a auditoría: ${error.message}. Revisa la consola y la configuración del script.`, 'alert');
                 return false;
             }
         }
@@ -556,21 +579,25 @@
                 return;
             }
             const sku = normalizarSku(skuInput.value);
-            if (!stockTeorico.some(p => p.sku === sku)) {
+            const producto = stockTeorico.find(p => p.sku === sku);
+            if (!producto) {
                 showModal('Error: El SKU no existe en el catálogo.', 'alert');
                 return;
             }
             const fisicoContadoActual = calcularFisicoContado(sku);
             const nuevaCantidadTotal = parseInt(cantidadInput.value, 10);
+            const diferencia = nuevaCantidadTotal - fisicoContadoActual;
 
             const logData = {
                 tipo: 'Corrección de Stock',
                 timestamp: new Date().toISOString(),
                 sku,
+                descripcion: producto.descripcion,
                 email: emailInput.value,
                 cantidadAnterior: fisicoContadoActual,
                 cantidadNueva: nuevaCantidadTotal,
-                userId: userId,
+                diferencia: diferencia,
+                userId: userEmail, // Enviar email en lugar de UID para ser más legible
                 businessId: BUSINESS_ID
             };
 
@@ -607,7 +634,8 @@
                 return;
             }
             const sku = normalizarSku(skuInput.value);
-            if (!stockTeorico.some(p => p.sku === sku)) {
+            const producto = stockTeorico.find(p => p.sku === sku);
+            if (!producto) {
                 showModal('Error: El SKU no existe en el catálogo.', 'alert');
                 return;
             }
@@ -617,9 +645,10 @@
                 tipo: 'Anulación de Venta',
                 timestamp: new Date().toISOString(),
                 sku,
+                descripcion: producto.descripcion,
                 email: emailInput.value,
-                cantidadAnular: cantidadAnular,
-                userId: userId,
+                cantidadAnulada: cantidadAnular,
+                userId: userEmail, // Enviar email en lugar de UID
                 businessId: BUSINESS_ID
             };
 
@@ -642,6 +671,7 @@
             }
         }
         
+        // --- FUNCIONES DE CÁLCULO Y RENDERIZADO ---
         function calcularFisicoContado(sku) {
             const conteosSKU = datosConteo.filter(c => c.sku === sku);
             if (conteosSKU.length === 0) return 0;
